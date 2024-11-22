@@ -40,31 +40,60 @@ document.addEventListener('DOMContentLoaded', () => {
     // Form submission handling
     const appointmentForm = document.getElementById('appointment-form');
     if (appointmentForm) {
-        appointmentForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Basic form validation
-            const formData = new FormData(appointmentForm);
-            let isValid = true;
-            let errorMessage = '';
+        appointmentForm.addEventListener('submit', handleAppointmentSubmit);
+    }
 
-            for (let [key, value] of formData.entries()) {
-                if (!value.trim()) {
-                    isValid = false;
-                    errorMessage = 'Please fill in all required fields.';
-                    break;
-                }
-            }
+    function handleAppointmentSubmit(event) {
+        event.preventDefault();
 
-            if (!isValid) {
-                alert(errorMessage);
-                return;
-            }
+        // Get form values
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+        const email = document.getElementById('email').value;
+        const service = document.getElementById('service').value;
+        const preferredLocation = document.getElementById('preferred-location').value;
+        const alternateLocation = document.getElementById('alternate-location').value;
+        const message = document.getElementById('message').value;
 
-            // Simulate form submission
-            alert('Thank you for your appointment request! We will contact you shortly to confirm your appointment.');
-            appointmentForm.reset();
-        });
+        // Create email body
+        const emailBody = `
+New Appointment Request
+
+Patient Information:
+Name: ${name}
+Phone: ${phone}
+Email: ${email}
+
+Appointment Details:
+Service: ${service}
+Preferred Location: ${preferredLocation}
+${alternateLocation ? `Alternative Location: ${alternateLocation}` : ''}
+
+Additional Notes:
+${message}`;
+
+        // Create email link
+        const emailLink = `mailto:linda@aaahcc.com?subject=New Appointment Request from ${name}&body=${encodeURIComponent(emailBody)}`;
+
+        // Create SMS link
+        const smsBody = `New appointment request from ${name} for ${service} at ${preferredLocation}. Contact: ${phone}`;
+        const smsLink = `sms:+14084755978?body=${encodeURIComponent(smsBody)}`;
+
+        // Open email client
+        window.location.href = emailLink;
+
+        // Open SMS client after a short delay
+        setTimeout(() => {
+            window.location.href = smsLink;
+        }, 1500);
+
+        // Show success message
+        alert('Thank you! Your appointment request has been sent. We will contact you shortly.');
+        
+        // Reset form
+        document.getElementById('appointment-form').reset();
+
+        return false;
     }
 
     // Scroll animations for sections

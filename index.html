@@ -376,92 +376,61 @@
 
         <section id="contact" class="contact">
             <div class="container">
-                <h2>Book Your Appointment</h2>
-                <div class="contact-grid">
-                    <div class="contact-info">
-                        <h3>Our Locations</h3>
+                <h2>Request Appointment</h2>
+                <div class="appointment-options">
+                    <div class="insurance-option">
+                        <h3>Using Insurance?</h3>
+                        <p>Please verify your insurance coverage before booking:</p>
+                        <a href="https://forms.gle/ogX8qCzRpM9Vfv9o9" class="btn insurance-btn" target="_blank">
+                            <i class="fas fa-clipboard-check"></i> Verify Insurance Coverage
+                        </a>
+                    </div>
+                    <div class="cash-option">
+                        <h3>Paying Cash?</h3>
+                        <p>Book your appointment directly:</p>
+                        <div class="form-container">
+                            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc5mp8IIoaW05nTk2ZShpXz8Ut2jD4DQ92bL3KBrG1-X850Rw/viewform?embedded=true" 
+                                width="100%" 
+                                height="750" 
+                                frameborder="0" 
+                                marginheight="0" 
+                                marginwidth="0">
+                                Loading…
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <p><i class="fas fa-phone"></i> (408) 475-5978</p>
+                    <p><i class="fas fa-envelope"></i> linda@aaahcc.com</p>
+                    <div class="location-info">
+                        <h4>Our Locations:</h4>
                         <div class="location">
-                            <h4>San Jose (Monterey)</h4>
-                            <p><i class="fas fa-map-marker-alt"></i> 2122 Monterey RD #114, San Jose, CA 95112</p>
+                            <h5>San Jose (Monterey)</h5>
+                            <a href="https://maps.google.com/?q=2122+Monterey+RD+%23114,+San+Jose,+CA+95112" target="_blank">
+                                <p><i class="fas fa-map-marker-alt"></i> 2122 Monterey RD #114, San Jose, CA 95112</p>
+                            </a>
                         </div>
                         <div class="location">
-                            <h4>San Jose (Prospect)</h4>
-                            <p><i class="fas fa-map-marker-alt"></i> 20445 Prospect RD #A, San Jose, CA 95129</p>
+                            <h5>San Jose (Prospect)</h5>
+                            <a href="https://maps.google.com/?q=20445+Prospect+RD+%23A,+San+Jose,+CA+95129" target="_blank">
+                                <p><i class="fas fa-map-marker-alt"></i> 20445 Prospect RD #A, San Jose, CA 95129</p>
+                            </a>
                         </div>
                         <div class="location">
-                            <h4>Santa Clara</h4>
-                            <p><i class="fas fa-map-marker-alt"></i> 2062 Walsh Ave b2, Santa Clara, CA 95050</p>
+                            <h5>Santa Clara</h5>
+                            <a href="https://maps.google.com/?q=2062+Walsh+Ave+b2,+Santa+Clara,+CA+95050" target="_blank">
+                                <p><i class="fas fa-map-marker-alt"></i> 2062 Walsh Ave b2, Santa Clara, CA 95050</p>
+                            </a>
                         </div>
                         <div class="location">
-                            <h4>Sunnyvale</h4>
-                            <p><i class="fas fa-map-marker-alt"></i> 1208 E Arques Ave STE 112, Sunnyvale, CA 94085</p>
-                        </div>
-                        <p><i class="fas fa-phone"></i> (408) 475-5978</p>
-                        <p><i class="fas fa-envelope"></i> info@aaahcc.com</p>
-                        <div class="insurance-verification">
-                            <h4>Insurance Verification</h4>
-                            <p>Check if your insurance is accepted:</p>
-                            <a href="https://forms.gle/ogX8qCzRpM9Vfv9o9" class="insurance-link" target="_blank">
-                                <i class="fas fa-clipboard-check"></i> Verify Your Insurance
+                            <h5>Sunnyvale</h5>
+                            <a href="https://maps.google.com/?q=1208+E+Arques+Ave+STE+112,+Sunnyvale,+CA+94085" target="_blank">
+                                <p><i class="fas fa-map-marker-alt"></i> 1208 E Arques Ave STE 112, Sunnyvale, CA 94085</p>
                             </a>
                         </div>
                     </div>
-                    <form class="contact-form">
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="service">Service Type</label>
-                            <select id="service" name="service" required>
-                                <option value="">Select a Service</option>
-                                <option value="acupuncture">Acupuncture</option>
-                                <option value="herbal">Herbal Medicine</option>
-                                <option value="cupping">Cupping Therapy</option>
-                                <option value="guasha">Gua Sha</option>
-                                <option value="tuina">Tui Na Massage</option>
-                                <option value="microneedling">Microneedling Facial</option>
-                                <option value="nanoneedling">Nanoneedling Facial</option>
-                                <option value="exercise">Exercise Instruction (Qi Gong/Tai Chi)</option>
-                                <option value="moxa">Moxibustion</option>
-                                <option value="led">LED Light Therapy</option>
-                                <option value="facial">Other Facial Treatments</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="preferred-location">Preferred Location</label>
-                            <select id="preferred-location" name="preferred-location" required>
-                                <option value="">Select First Choice Location</option>
-                                <option value="monterey">San Jose (Monterey)</option>
-                                <option value="prospect">San Jose (Prospect)</option>
-                                <option value="santa-clara">Santa Clara</option>
-                                <option value="sunnyvale">Sunnyvale</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="alternate-location">Alternative Location</label>
-                            <select id="alternate-location" name="alternate-location">
-                                <option value="">Select Second Choice Location (Optional)</option>
-                                <option value="monterey">San Jose (Monterey)</option>
-                                <option value="prospect">San Jose (Prospect)</option>
-                                <option value="santa-clara">Santa Clara</option>
-                                <option value="sunnyvale">Sunnyvale</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Additional Notes</label>
-                            <textarea id="message" name="message" rows="4"></textarea>
-                        </div>
-                        <button type="submit" class="submit-btn">Request Appointment</button>
-                    </form>
                 </div>
             </div>
         </section>
