@@ -869,7 +869,7 @@ h1, h2, h3, h4 {
 
 .insurance-option,
 .cash-option {
-    background: var(--light-bg);
+    background: var(--white);
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -906,10 +906,40 @@ h1, h2, h3, h4 {
     font-size: 1.2rem;
 }
 
+.form-container {
+    margin-top: 1.5rem;
+    width: 100%;
+    height: 600px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.form-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    .appointment-options {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .insurance-option,
+    .cash-option {
+        padding: 1rem;
+    }
+
+    .form-container {
+        height: 600px;
+    }
+}
+
 /* Google Forms */
 .form-container {
     width: 100%;
-    min-height: 750px;
+    min-height: 600px;
     overflow: hidden;
     border-radius: 4px;
 }
@@ -931,7 +961,7 @@ h1, h2, h3, h4 {
     }
 
     .form-container {
-        min-height: 800px;
+        min-height: 600px;
     }
 }
 
