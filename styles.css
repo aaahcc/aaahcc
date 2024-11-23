@@ -873,6 +873,7 @@ h1, h2, h3, h4 {
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 .insurance-option h3,
@@ -886,38 +887,26 @@ h1, h2, h3, h4 {
     margin-bottom: 1.5rem;
 }
 
-.insurance-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--primary-color);
-    color: white;
+.insurance-btn,
+.appointment-btn {
+    display: inline-block;
     padding: 1rem 2rem;
-    border-radius: 4px;
+    background-color: var(--primary-color);
+    color: var(--white);
     text-decoration: none;
-    transition: background-color 0.3s ease;
-}
-
-.insurance-btn:hover {
-    background: var(--primary-dark);
-}
-
-.insurance-btn i {
-    font-size: 1.2rem;
-}
-
-.form-container {
-    margin-top: 1.5rem;
-    width: 100%;
-    height: 600px;
     border-radius: 4px;
-    overflow: hidden;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
 }
 
-.form-container iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
+.insurance-btn:hover,
+.appointment-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.insurance-btn i,
+.appointment-btn i {
+    margin-right: 0.5rem;
 }
 
 @media (max-width: 768px) {
@@ -928,11 +917,7 @@ h1, h2, h3, h4 {
 
     .insurance-option,
     .cash-option {
-        padding: 1rem;
-    }
-
-    .form-container {
-        height: 600px;
+        padding: 1.5rem;
     }
 }
 
