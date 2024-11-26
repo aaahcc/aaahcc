@@ -40,7 +40,7 @@
                 <div class="hero-buttons">
                     <a href="#contact" class="primary-btn">Schedule Consultation</a>
                     <a href="#services" class="secondary-btn">Explore Services</a>
-                    <a href="https://forms.gle/ogX8qCzRpM9Vfv9o9" class="btn secondary-btn" target="_blank">Verify Insurance</a>
+                    <a href="https://forms.gle/S3VCt2FdJVh95Umo9" class="btn secondary-btn" target="_blank">Verify Insurance</a>
                 </div>
             </div>
         </section>
@@ -377,19 +377,35 @@
         <section id="contact" class="contact">
             <div class="container">
                 <h2>Request Appointment</h2>
+                <div class="update-form-section">
+                    <h3>Update Existing Form</h3>
+                    <p>Already submitted a form and need to make changes? Enter your email to find your submissions:</p>
+                    <div class="update-form">
+                        <input type="email" id="update-email" placeholder="Enter your email">
+                        <button onclick="findSubmissions()">Find My Forms</button>
+                    </div>
+                    <div id="submissions-list" class="submissions-list" style="display: none;">
+                        <h4>Your Submissions:</h4>
+                        <div id="submissions-container"></div>
+                    </div>
+                </div>
                 <div class="appointment-options">
+                    <div class="cash-option">
+                        <h3>Paying Cash?</h3>
+                        <p>Ready to schedule? Complete our new patient registration:</p>
+                        <a href="https://forms.gle/3YVfL9vcecGpaDLLA" class="btn appointment-btn" target="_blank">
+                            <i class="fas fa-user-plus"></i> New Patient Registration
+                        </a>
+                    </div>
                     <div class="insurance-option">
                         <h3>Using Insurance?</h3>
                         <p>Please verify your insurance coverage before booking:</p>
-                        <a href="https://forms.gle/ogX8qCzRpM9Vfv9o9" class="btn insurance-btn" target="_blank">
+                        <a href="https://forms.gle/S3VCt2FdJVh95Umo9" class="btn insurance-btn" target="_blank">
                             <i class="fas fa-clipboard-check"></i> Verify Insurance Coverage
                         </a>
-                    </div>
-                    <div class="cash-option">
-                        <h3>Paying Cash?</h3>
-                        <p>Book your appointment directly:</p>
-                        <a href="https://forms.gle/7HPk5emGUWPZowHR9" class="btn appointment-btn" target="_blank">
-                            <i class="fas fa-calendar-check"></i> Request Appointment
+                        <p class="mt-3">Insurance verified? Complete our new patient registration:</p>
+                        <a href="https://forms.gle/3YVfL9vcecGpaDLLA" class="btn appointment-btn" target="_blank">
+                            <i class="fas fa-user-plus"></i> New Patient Registration
                         </a>
                     </div>
                 </div>

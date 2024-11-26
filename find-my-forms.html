@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find My Forms - Allcare Acupuncture & Herb Clinic</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Find My Forms</h1>
+        <div class="search-section">
+            <p>Enter your email address to find your forms:</p>
+            <div class="search-box">
+                <input type="email" id="emailSearch" placeholder="Enter your email address">
+                <button onclick="searchForms()">Search</button>
+            </div>
+
+            <!-- Second level search (initially hidden) -->
+            <div id="nameSearchSection" class="name-search-section" style="display: none;">
+                <p>Multiple forms found. Please enter the patient's first name:</p>
+                <div class="search-box">
+                    <input type="text" id="nameSearch" placeholder="Enter patient's first name">
+                    <button onclick="filterByName()">Filter</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="loadingMessage" class="loading-message" style="display: none;">
+            Searching for your forms...
+        </div>
+
+        <div id="searchResults" class="search-results">
+            <!-- Results will be displayed here -->
+        </div>
+
+        <div class="back-section">
+            <a href="index.html" class="return-home">Return to Homepage</a>
+        </div>
+    </div>
+
+    <script src="find-my-forms.js"></script>
+</body>
+</html>

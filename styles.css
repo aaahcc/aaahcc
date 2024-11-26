@@ -950,6 +950,197 @@ h1, h2, h3, h4 {
     }
 }
 
+/* Update Form Section */
+.update-form-section {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.update-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.update-form input[type="email"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.update-form button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.update-form button:hover {
+    background-color: #45a049;
+}
+
+/* Submissions List */
+.submissions-list {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.submissions-list h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+
+.submission-item {
+    margin-bottom: 10px;
+}
+
+.submission-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submission-button:hover {
+    background-color: #f5f5f5;
+    border-color: #4CAF50;
+}
+
+/* Consent Form Sections */
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-section h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #4CAF50;
+}
+
+.consent-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.consent-text p {
+    margin-bottom: 1rem;
+}
+
+.consent-text ul,
+.consent-text ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.consent-text li {
+    margin-bottom: 0.5rem;
+}
+
+.privacy-notice .emphasis {
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-left: 4px solid #4CAF50;
+}
+
+/* Signature Section */
+.signature-section {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.signature-pad-container {
+    margin: 1rem 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.signature-controls {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-actions {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+#submitButton {
+    padding: 1rem 2rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#submitButton:hover {
+    background-color: #45a049;
+}
+
+#clearButton {
+    padding: 0.5rem 1rem;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#clearButton:hover {
+    background-color: #e9ecef;
+    border-color: #ccc;
+}
+
 /* Footer */
 .footer {
     background-color: var(--primary-color);
@@ -1045,4 +1236,374 @@ h1, h2, h3, h4 {
     .service-card {
         margin: 1rem;
     }
+}
+
+/* Signature Pad Styles */
+.signature-section {
+    margin: 20px 0;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.signature-container {
+    margin-top: 15px;
+}
+
+#signaturePad {
+    width: 100%;
+    height: 200px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    touch-action: none;
+}
+
+.signature-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.signature-buttons button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+#clearSignature {
+    background-color: #f44336;
+    color: white;
+}
+
+#clearSignature:hover {
+    background-color: #d32f2f;
+}
+
+#saveSignature {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#saveSignature:hover {
+    background-color: #45a049;
+}
+
+/* Make signature pad responsive */
+@media (max-width: 768px) {
+    #signaturePad {
+        height: 150px;
+    }
+    
+    .signature-buttons {
+        flex-direction: column;
+    }
+}
+
+/* Thank You Page Styles */
+.thank-you-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.thank-you-content {
+    margin-top: 30px;
+    padding: 40px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.thank-you-content h1 {
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+.thank-you-content p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.button-container {
+    margin-top: 30px;
+}
+
+.return-home {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.return-home:hover {
+    background-color: #45a049;
+}
+
+/* Loading Message Styles */
+.loading-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Find My Forms Styles */
+.search-section {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-box {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.search-box input[type="email"] {
+    flex: 1;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.search-box button {
+    padding: 0.8rem 1.5rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.search-box button:hover {
+    background-color: #45a049;
+}
+
+.forms-list {
+    margin-top: 2rem;
+}
+
+.form-item {
+    background-color: white;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-item h3 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+}
+
+.form-item p {
+    margin: 0.5rem 0;
+    color: #666;
+}
+
+.action-button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    transition: background-color 0.3s;
+}
+
+.action-button:hover {
+    background-color: #45a049;
+}
+
+.status-complete {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
+
+.error-message {
+    color: #d32f2f;
+    padding: 1rem;
+    background-color: #ffebee;
+    border-radius: 4px;
+    margin-top: 1rem;
+}
+
+.no-results {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+/* Name search section styles */
+.name-search-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #ddd;
+}
+
+/* Patient group styles */
+.patient-group {
+    margin-bottom: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.patient-name {
+    margin: 0;
+    padding: 1rem;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.patient-forms {
+    padding: 1rem;
+}
+
+.patient-forms .form-item {
+    background-color: white;
+    margin-bottom: 1rem;
+}
+
+.patient-forms .form-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Privacy Notice Page Styles */
+.privacy-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem 0;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.privacy-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.notice-emphasis {
+    background-color: #f5f5f5;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+    border-left: 4px solid #2196f3;
+}
+
+.notice-emphasis p {
+    margin: 0;
+    font-weight: 600;
+}
+
+.privacy-section {
+    margin: 2rem 0;
+}
+
+.info-card {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.rights-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.right-item {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+}
+
+.right-item h4 {
+    color: #2196f3;
+    margin-top: 0;
+}
+
+.contact-info {
+    background-color: #f5f5f5;
+    padding: 1.5rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+
+.privacy-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 2rem 0;
+    border-top: 2px solid #e0e0e0;
+}
+
+.return-link {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #2196f3;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.return-link:hover {
+    background-color: #1976d2;
+}
+
+/* Consent Form Privacy Section Updates */
+.checkbox-group {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+.checkbox-group label {
+    font-weight: 500;
 }

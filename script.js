@@ -156,4 +156,130 @@ ${message}`;
             });
         });
     });
+
+    async function findSubmissions() {
+        const email = document.getElementById('update-email').value;
+        if (!email) {
+            alert('Please enter your email address');
+            return;
+        }
+
+        try {
+            const submissions = await google.script.run.withSuccessHandler(displaySubmissions)
+                .withFailureHandler(handleError)
+                .getAllSubmissions(email);
+        } catch (error) {
+            handleError(error);
+        }
+    }
+
+    function displaySubmissions(submissions) {
+        const submissionsList = document.getElementById('submissions-list');
+        const container = document.getElementById('submissions-container');
+        
+        if (!submissions || submissions.length === 0) {
+            alert('No submissions found for this email address. Please submit a new form.');
+            submissionsList.style.display = 'none';
+            return;
+        }
+        
+        // Clear previous submissions
+        container.innerHTML = '';
+        
+        // Create a button for each submission
+        submissions.forEach(submission => {
+            const submissionDiv = document.createElement('div');
+            submissionDiv.className = 'submission-item';
+            
+            const button = document.createElement('button');
+            button.className = 'submission-button';
+            button.textContent = submission.summary;
+            button.onclick = () => requestPrefilledForm(submission.id);
+            
+            submissionDiv.appendChild(button);
+            container.appendChild(submissionDiv);
+        });
+        
+        // Show the submissions list
+        submissionsList.style.display = 'block';
+    }
+
+    async function requestPrefilledForm(submissionId) {
+        const email = document.getElementById('update-email').value;
+        
+        try {
+            const response = await google.script.run.withSuccessHandler(handlePrefilledUrl)
+                .withFailureHandler(handleError)
+                .createPrefilledUrlForSubmission(email, submissionId);
+        } catch (error) {
+            handleError(error);
+        }
+    }
+
+    function handlePrefilledUrl(url) {
+        if (!url) {
+            alert('Unable to generate the pre-filled form. Please try again later.');
+            return;
+        }
+        window.open(url, '_blank');
+    }
+
+    function handleError(error) {
+        console.error('Error:', error);
+        alert('An error occurred while processing your request. Please try again later.');
+    }
+
+    // Initialize signature pad
+    let signaturePad;
+
+    const canvas = document.getElementById('signaturePad');
+    
+    // Set canvas dimensions based on container size
+    function resizeCanvas() {
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = canvas.offsetHeight * ratio;
+        canvas.getContext("2d").scale(ratio, ratio);
+    }
+    
+    // Initialize signature pad
+    signaturePad = new SignaturePad(canvas, {
+        backgroundColor: 'rgb(255, 255, 255)',
+        penColor: 'rgb(0, 0, 0)',
+        minWidth: 0.5,
+        maxWidth: 2.5
+    });
+    
+    // Handle window resize
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    
+    // Clear signature button
+    document.getElementById('clearSignature').addEventListener('click', function() {
+        signaturePad.clear();
+    });
+    
+    // Save signature button
+    document.getElementById('saveSignature').addEventListener('click', function() {
+        if (signaturePad.isEmpty()) {
+            alert('Please provide a signature first.');
+            return;
+        }
+        
+        // Get signature as base64 image
+        const signatureData = signaturePad.toDataURL();
+        document.getElementById('signatureData').value = signatureData;
+        
+        // Show success message
+        alert('Signature saved successfully!');
+    });
+
+    // Function to validate form before submission
+    function validateForm() {
+        if (!document.getElementById('signatureData').value) {
+            alert('Please sign the form before submitting.');
+            return false;
+        }
+        return true;
+    }
 });
