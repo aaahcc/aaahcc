@@ -5,25 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Find My Forms - Allcare Acupuncture & Herb Clinic</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .form-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .form-card h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        .form-details {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .form-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+        .form-link:hover {
+            background-color: #2980b9;
+        }
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        #searchForm {
+            margin-bottom: 20px;
+        }
+        .error-message {
+            color: #e74c3c;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #e74c3c;
+            border-radius: 4px;
+            background-color: #fdf3f2;
+        }
+        .debug-info {
+            font-family: monospace;
+            font-size: 12px;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Find My Forms</h1>
         <div class="search-section">
             <p>Enter your email address to find your forms:</p>
-            <div class="search-box">
-                <input type="email" id="emailSearch" placeholder="Enter your email address">
-                <button onclick="searchForms()">Search</button>
-            </div>
-
-            <!-- Second level search (initially hidden) -->
-            <div id="nameSearchSection" class="name-search-section" style="display: none;">
-                <p>Multiple forms found. Please enter the patient's first name:</p>
+            <form id="searchForm" onsubmit="searchForms(event)">
                 <div class="search-box">
-                    <input type="text" id="nameSearch" placeholder="Enter patient's first name">
-                    <button onclick="filterByName()">Filter</button>
+                    <input type="email" id="emailSearch" name="email" placeholder="Enter your email address" required>
+                    <button type="submit">Search</button>
                 </div>
-            </div>
+            </form>
         </div>
 
         <div id="loadingMessage" class="loading-message" style="display: none;">
@@ -34,11 +83,96 @@
             <!-- Results will be displayed here -->
         </div>
 
+        <div id="debugInfo" class="debug-info">
+            <!-- Debug information will be displayed here -->
+        </div>
+
         <div class="back-section">
             <a href="index.html" class="return-home">Return to Homepage</a>
         </div>
     </div>
 
-    <script src="find-my-forms.js"></script>
+    <script>
+        // Configuration
+        const SCRIPT_ID = 'AKfycbzXpZWXkF5vgvZ8H9JYmJ_2ZjX9Q-X3K2Z9Q8Z9Q8Z9Q'; // Replace with your actual script ID
+        const DEBUG_MODE = true; // Set to false in production
+
+        function showError(message, details = '') {
+            const searchResults = document.getElementById('searchResults');
+            const debugInfo = document.getElementById('debugInfo');
+            
+            searchResults.innerHTML = `<div class="error-message">${message}</div>`;
+            
+            if (DEBUG_MODE && details) {
+                debugInfo.style.display = 'block';
+                debugInfo.textContent = `Debug Information:\n${details}`;
+            }
+        }
+
+        function showDebug(info) {
+            if (!DEBUG_MODE) return;
+            
+            const debugInfo = document.getElementById('debugInfo');
+            debugInfo.style.display = 'block';
+            debugInfo.textContent = typeof info === 'string' ? info : JSON.stringify(info, null, 2);
+        }
+
+        async function searchForms(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('emailSearch').value.trim();
+            if (!email) {
+                showError('Please enter an email address');
+                return;
+            }
+
+            const loadingMessage = document.getElementById('loadingMessage');
+            const searchResults = document.getElementById('searchResults');
+            const debugInfo = document.getElementById('debugInfo');
+            
+            loadingMessage.style.display = 'block';
+            searchResults.innerHTML = '';
+            debugInfo.style.display = 'none';
+
+            try {
+                // Construct the URL
+                const url = `https://script.google.com/macros/s/${SCRIPT_ID}/exec?email=${encodeURIComponent(email)}`;
+                showDebug(`Fetching: ${url}`);
+
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                showDebug('Response received:');
+                showDebug(data);
+                
+                if (data.error) {
+                    showError(data.error);
+                } else if (!data.results || data.results.length === 0) {
+                    searchResults.innerHTML = '<div class="no-results">No forms found for this email address.</div>';
+                } else {
+                    const html = data.results.map(form => `
+                        <div class="form-card">
+                            <h3>${form.formName}</h3>
+                            <div class="form-details">
+                                <div>Submitted: ${form.timestamp}</div>
+                                <div>Name: ${form.firstName} ${form.lastName}</div>
+                            </div>
+                            <a href="${form.editUrl}" target="_blank" class="form-link">View Form</a>
+                        </div>
+                    `).join('');
+                    
+                    searchResults.innerHTML = html;
+                }
+            } catch (error) {
+                showError('An error occurred while searching. Please try again later.', `
+                    Error: ${error.message}
+                    Stack: ${error.stack}
+                    Timestamp: ${new Date().toISOString()}
+                `);
+            } finally {
+                loadingMessage.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
