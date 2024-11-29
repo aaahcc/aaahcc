@@ -301,110 +301,40 @@ function sendRegistrationConfirmationEmail(email, firstName, lastName, formRespo
 
 function notifyAdminOfNewRegistration(firstName, lastName, formData, patientFolderInfo) {
   try {
+    const { folder } = patientFolderInfo;
+    const timestamp = new Date().toLocaleString();
+    
+    // Create admin notification email
     const adminEmailBody = `
-New Patient Registration Details:
-
+New Patient Registration (${timestamp})
 
 Patient Information:
-- Name: ${formData['First Name'] || ''} ${formData['Last Name'] || ''}
-- Phone: ${formData['Phone Number (can receive text)'] || 'Not provided'}
-- Email: ${formData['Email Address'] || 'Not provided'}
-- Date of Birth: ${formData['Date of Birth'] || 'Not provided'}
+- Name: ${firstName} ${lastName}
+- Insurance Status: ${formData['Insurance Status'] || 'Not specified'}
 
-Insurance Status:
-- Has Insurance: ${formData['Do you have acupuncture insurance?'] || 'Not provided'}
-- Provider: ${formData['Insurance Provider'] || 'Not provided'}
-- Member ID: ${formData['Member ID'] || 'Not provided'}
+Registration Details:
+${Object.entries(formData)
+  .map(([key, value]) => `${key}: ${value}`)
+  .join('\n')}
 
-Medical Information:
-- Chief Complaint: ${formData['Chief Complain, current health problem(s)'] || 'Not provided'}
-- Preferred Location: ${formData['Preferred  Office Location'] || 'Not provided'}
+Folder Link:
+${folder.getUrl()}`;
 
-View patient folder:
-${DriveApp.getFolderById(patientFolderInfo.folderId).getUrl()}
-
-View all registrations:
-https://docs.google.com/spreadsheets/d/19uXVF7N9MfjjzXlKVTopIO4qpi1BeQRH0r1caByVmdo/edit?usp=sharing`;
-
+    // Send email notification
     MailApp.sendEmail({
-      to: "linda@aaahcc.com",
+      to: 'linda@aaahcc.com,jasonjinxiao@gmail.com',
       subject: `New Patient Registration: ${firstName} ${lastName}`,
       body: adminEmailBody
     });
 
-    Logger.log('Admin notifications sent successfully');
-    return true;
-  } catch (error) {
-    console.error('Error sending admin notifications:', error);
-    Logger.log('Error sending admin notifications: ' + error);
-    return false;
-  }
-}
+    // Send SMS notification
+    const message = `New patient registration: ${firstName} ${lastName}`;
+    MailApp.sendEmail('4085936847@vtext.com', '', message);
 
-
-function createRegistrationConsentFormDocument(folder, consentData) {
-  try {
-    const { firstName, lastName, timestamp, email } = consentData;
-    const documentName = `Consent Form - ${lastName}, ${firstName} (${timestamp})`;
-    
-    // Create the consent form document
-    const doc = DocumentApp.create(documentName);
-    const body = doc.getBody();
-    
-    // Add content to the document
-    body.appendParagraph('PATIENT CONSENT FORM')
-        .setHeading(DocumentApp.ParagraphHeading.HEADING1)
-        .setAlignment(DocumentApp.HorizontalAlignment.CENTER);
-        
-    body.appendParagraph('\n');
-    
-    // Add patient information
-    body.appendParagraph(`Patient Name: ${firstName} ${lastName}`);
-    body.appendParagraph(`Date: ${new Date().toLocaleDateString()}`);
-    
-    body.appendParagraph('\n');
-    
-    // Add consent text sections
-    body.appendParagraph('INFORMED CONSENT TO TREAT')
-        .setHeading(DocumentApp.ParagraphHeading.HEADING2);
-        
-    body.appendParagraph(
-      'I hereby request and consent to the performance of acupuncture treatments and other procedures ' +
-      'within the scope of the practice of acupuncture on me (or on the patient named below, for whom I ' +
-      'am legally responsible) by the acupuncturist indicated below and/or other licensed acupuncturists ' +
-      'who now or in the future treat me while employed by, working or associated with or serving as ' +
-      'back-up for the acupuncturist named below, including those working at the clinic or office listed ' +
-      'below or any other office or clinic, whether signatories to this form or not.'
-    );
-    
-    // Add signature section
-    body.appendParagraph('\n\n');
-    body.appendParagraph('Patient Signature: _________________________________');
-    body.appendParagraph('Date: _________________');
-    
-    // Save and close the document
-    doc.saveAndClose();
-    
-    // Move the document to the patient's folder
-    const docFile = DriveApp.getFileById(doc.getId());
-    folder.addFile(docFile);
-    DriveApp.getRootFolder().removeFile(docFile);
-    
-    // Set edit permissions for the patient
-    if (email) {
-      docFile.addEditor(email);
-      Logger.log(`Added editor permission for ${email} to document ${documentName}`);
-    }
-    
-    return {
-      document: doc,
-      documentId: doc.getId(),
-      documentUrl: doc.getUrl()
-    };
+    Logger.log(`Admin notification sent for ${firstName} ${lastName}`);
   } catch (error) {
-    console.error('Error creating consent form document:', error);
-    Logger.log('Error creating consent form document: ' + error);
-    throw error;
+    console.error('Error sending admin notification:', error);
+    Logger.log('Error sending admin notification: ' + error);
   }
 }
 
@@ -423,7 +353,9 @@ function sendRegistrationConsentFormEmail(patientEmail, firstName, lastName, res
       `insuranceProvider=${encodeURIComponent(formData['Insurance Provider'] || '')}`
     ].join('&');
     
-    const consentFormUrl = `https://aaahcc.com/consent-form-aaahcc.html?${params}`;
+    // Use raw GitHub Pages URL
+    const consentFormUrl = `https://aaahcc.github.io/aaahcc/consent-form-aaahcc.html?${params}`;
+    console.log('Generated consent form URL:', consentFormUrl);
     
     // Update tracking sheet
     const rowNumber = updateConsentFormTrackingSheet(firstName, lastName, patientEmail, responseId, formData);
@@ -434,22 +366,43 @@ function sendRegistrationConsentFormEmail(patientEmail, firstName, lastName, res
     // Send email with form link
     const subject = `Consent Form Needed - ${firstName} ${lastName}`;
     const body = `
-<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-  <p><strong>New Patient Registration - Consent Form Needed</strong></p>
-  <p>Dear ${firstName} ${lastName},</p>
-  <p>Thank you for registering with ALLCARE Acupuncture & Herb Clinic. Please click the button below to review and sign your consent form:</p>
-  <p><a href="${consentFormUrl}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Sign Consent Form</a></p>
-  <p>If you have any questions, please don't hesitate to contact us.</p>
-  <p>Best regards,<br>ALLCARE Acupuncture & Herb Clinic</p>
-</div>`;
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <p><strong>New Patient Registration - Consent Form Needed</strong></p>
+      <p>Dear ${firstName} ${lastName},</p>
+      <p>Thank you for registering with ALLCARE Acupuncture & Herb Clinic. Please click the link below to review and sign your consent form:</p>
+      <p style="margin: 20px 0;">
+        <a href="${consentFormUrl}" 
+           style="background-color: #4CAF50; 
+                  color: white; 
+                  padding: 12px 24px; 
+                  text-decoration: none; 
+                  border-radius: 5px; 
+                  display: inline-block;
+                  font-size: 16px;">
+          Sign Consent Form
+        </a>
+      </p>
+      <p>If the button above doesn't work, you can copy and paste this link into your browser:</p>
+      <p style="word-break: break-all; font-size: 14px; color: #666;">
+        ${consentFormUrl}
+      </p>
+      <p>If you have any questions, please don't hesitate to contact us.</p>
+      <p>Best regards,<br>ALLCARE Acupuncture & Herb Clinic</p>
+    </div>`;
+
+    // Simple email validation
+    if (patientEmail && patientEmail.includes('@')) {
+      console.log('Sending email to:', patientEmail);
+      MailApp.sendEmail({
+        to: patientEmail,
+        subject: subject,
+        htmlBody: body
+      });
+      Logger.log('Email sent to: ' + patientEmail);
+    } else {
+      Logger.log('Invalid email address: ' + patientEmail);
+    }
     
-    MailApp.sendEmail({
-      to: patientEmail,
-      subject: subject,
-      htmlBody: body
-    });
-    
-    Logger.log(`Sent consent form email to ${patientEmail}`);
     return true;
   } catch (error) {
     console.error('Error sending consent form email:', error);
@@ -533,71 +486,118 @@ function updateTrackingSheetIDs(rowNumber, folderId, consentFormId) {
 
 
 function onRegistrationFormSubmit(e) {
-  console.log('=== REGISTRATION FORM SUBMISSION STARTED ===');
-  Logger.log('=== REGISTRATION FORM SUBMISSION STARTED ===');
- 
+  console.log('=== REGISTRATION FORM SUBMISSION STARTED ===');  
   try {
-    if (!e || !e.response) {
-      throw new Error('No form response data received');
-    }
-
-
+    // Get form response
     const formResponse = e.response;
     const itemResponses = formResponse.getItemResponses();
     const responseId = formResponse.getId();
-   
-    // Initialize form data object
-    const formData = {};
-   
-    // Get all form responses
-    itemResponses.forEach(response => {
-      const title = response.getItem().getTitle();
-      const answer = response.getResponse();
-      formData[title] = answer;
-    });
-   
-    console.log('Processing form for:', formData['First Name'], formData['Last Name']);
-    Logger.log('Processing form for: ' + formData['First Name'] + ' ' + formData['Last Name']);
-   
-    // Create patient folder
-    const patientFolder = createPatientFolder(
-      formData['First Name'],
-      formData['Last Name'],
-      formData['Insurance Provider']
-    );
-   
-    // Send confirmation email with formResponse for edit URL
-    console.log('Sending confirmation email...');
-    sendRegistrationConfirmationEmail(
-      formData['Email Address'],
-      formData['First Name'],
-      formData['Last Name'],
-      formResponse // Pass the entire formResponse object
-    );
-    console.log('Confirmation email sent.');
-   //notify Admin New Registration
-    console.log('notify Admin New Registration...');
-    notifyAdminOfNewRegistration(formData['First Name'], formData['Last Name'], formData, patientFolder);
     
-    // Send consent form notification and update tracking
-    console.log('Processing consent form notification...');
-    sendRegistrationConsentFormEmail(
-      formData['Email Address'],
-      formData['First Name'],
-      formData['Last Name'],
-      responseId,
-      formData
-    );
-    console.log('Consent form notification processed.');
-   
-    // Log success
-    console.log('=== REGISTRATION FORM SUBMISSION COMPLETED SUCCESSFULLY ===');
-    Logger.log('=== REGISTRATION FORM SUBMISSION COMPLETED SUCCESSFULLY ===');
-   
+    // Extract form data
+    const formData = {};
+    itemResponses.forEach(response => {
+      formData[response.getItem().getTitle()] = response.getResponse();
+    });
+    
+    // Get key information
+    const firstName = formData['First Name'];
+    const lastName = formData['Last Name'];
+    const email = formData['Email Address'];
+    
+    // Create patient folder and handle registration
+    const patientFolderInfo = handleRegistrationAndCreateFolder(formData);
+
+    // Send confirmation email to patient
+    sendRegistrationConfirmationEmail(email, firstName, lastName, formResponse);
+    
+    // Send consent form email
+    sendRegistrationConsentFormEmail(email, firstName, lastName, responseId, formData);
+    
+    // Notify admin
+    //notifyAdminOfNewRegistration(firstName, lastName, formData, patientFolderInfo);
+    
+    Logger.log('Registration form submission processed successfully');
   } catch (error) {
-    const errorMessage = `Error processing registration form: ${error.toString()}\nStack: ${error.stack}`;
-    console.error(errorMessage);
-    Logger.log(errorMessage);
+    Logger.log('Error processing registration form submission: ' + error);
+    console.error('Error processing registration form submission:', error);
+  }
+}
+
+function setupRegistrationFormTrigger() {
+  // Get the form by ID
+  const form = FormApp.openById('1FAIpQLSd8hS4jrpLJ8IKKLfOkDm-6jKX4-Sv3YZ10GWuVeT1YK0_YhQ');
+  
+  // Remove any existing triggers
+  const triggers = ScriptApp.getProjectTriggers();
+  triggers.forEach(trigger => {
+    if (trigger.getHandlerFunction() === 'onRegistrationFormSubmit') {
+      ScriptApp.deleteTrigger(trigger);
+    }
+  });
+  
+  // Create new trigger
+  ScriptApp.newTrigger('onRegistrationFormSubmit')
+    .forForm(form)
+    .onFormSubmit()
+    .create();
+    
+  Logger.log('Registration form trigger set up successfully');
+}
+
+function handleRegistrationAndCreateFolder(formData) {
+  // Extract patient information
+  const firstName = formData['First Name'] || '';
+  const lastName = formData['Last Name'] || '';
+  const insuranceProvider = formData['Insurance Provider'] || '';
+  const timestamp = new Date().toLocaleString();
+
+  try {
+    // Create patient folder using the standard pattern
+    const { folder } = createPatientFolder(firstName, lastName, insuranceProvider);
+   
+    // Create text file with form data
+    const formDataContent = Object.entries(formData)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join('\n');
+   
+    const textFile = folder.createFile(
+      `Registration Form Data - ${firstName} ${lastName}.txt`,
+      formDataContent
+    );
+
+    // Send admin notification
+    const adminEmailBody = `
+New Patient Registration (${timestamp})
+
+Patient Information:
+- Name: ${firstName} ${lastName}
+- Insurance Provider: ${insuranceProvider}
+
+Form Details:
+${formDataContent}
+
+Folder Link:
+${folder.getUrl()}`;
+ //jasonjinxiao@gmail.com",
+  console.log(`sending admin email`);
+    MailApp.sendEmail({
+      to: "linda@aaahcc.com",
+      subject: `New Patient Registration: ${firstName} ${lastName}`,
+      body: adminEmailBody
+    });
+
+    // Send SMS notification
+    const message = `New patient registration: ${firstName} ${lastName}`;
+    MailApp.sendEmail("4085936847@vtext.com", "", message);
+
+    console.log(`Created/Updated folder: ${folder.getName()}`);
+    Logger.log(`Created/Updated folder: ${folder.getName()}`);
+
+    return { folder };
+  } catch (error) {
+    console.error('Error creating folder:', error);
+    Logger.log('Error creating folder: ' + error.toString());
+    throw error;
   }
 }
 
@@ -671,95 +671,6 @@ function createRegistrationSOAPNoteTemplate(folderName, firstName, lastName) {
 }
 
 
-function handleRegistrationAndCreateFolder(formData) {
-  // Extract patient information
-  const firstName = formData['First Name'] || '';
-  const lastName = formData['Last Name'] || '';
-  const insuranceStatus = formData['Insurance Status'] || 'Cash';
-  const timestamp = new Date().toLocaleString();
-
-
-  try {
-    // Create patient folder using the standard pattern
-    const patientFolder = createPatientFolder(firstName, lastName, insuranceStatus);
-   
-    // Create text file with form data
-    const formDataContent = Object.entries(formData)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join('\n');
-   
-    const textFile = patientFolder.createFile(
-      `Registration Form Data - ${firstName} ${lastName}.txt`,
-      formDataContent
-    );
-
-
-    // Send admin notification
-    const adminEmailBody = `
-New Patient Registration (${timestamp})
-
-
-Patient Information:
-- Name: ${firstName} ${lastName}
-- Insurance Status: ${insuranceStatus}
-
-
-Form Details:
-${formDataContent}
-
-
-Folder Link:
-${patientFolder.getUrl()}`;
-
-
-    MailApp.sendEmail({
-      to: "linda@aaahcc.com,jasonjinxiao@gmail.com",
-      subject: `New Patient Registration: ${firstName} ${lastName}`,
-      body: adminEmailBody
-    });
-
-
-    // Send SMS notification
-    const message = `New patient registration: ${firstName} ${lastName}`;
-    MailApp.sendEmail("4085936847@vtext.com", "", message);
-
-
-    console.log(`Created/Updated folder: ${patientFolder.getName()}`);
-    Logger.log(`Created/Updated folder: ${patientFolder.getName()}`);
-
-
-    return patientFolder;
-  } catch (error) {
-    console.error('Error creating folder:', error);
-    Logger.log('Error creating folder: ' + error.toString());
-    throw error;
-  }
-}
-
-
-function setupRegistrationFormTrigger() {
-  // Delete any existing triggers
-  const triggers = ScriptApp.getProjectTriggers();
-  triggers.forEach(trigger => {
-    if (trigger.getHandlerFunction() === 'onRegistrationFormSubmit') {
-      ScriptApp.deleteTrigger(trigger);
-    }
-  });
-
-
-  // Create new trigger
-  const form = FormApp.openById(REGISTRATION_FORM_ID);
-  ScriptApp.newTrigger('onRegistrationFormSubmit')
-    .forForm(form)
-    .onFormSubmit()
-    .create();
-   
-  console.log('Registration form trigger set up successfully');
-  Logger.log('Registration form trigger set up successfully');
-}
-
-
-// Run this function manually to set up the trigger
 function setupAllTriggers() {
   setupRegistrationFormTrigger();
   console.log('All triggers set up successfully');

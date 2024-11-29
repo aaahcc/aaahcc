@@ -8,133 +8,108 @@ document.addEventListener('DOMContentLoaded', function() {
         firstName: urlParams.get('firstName') || '',
         lastName: urlParams.get('lastName') || '',
         email: urlParams.get('email') || '',
-        formResponseId: urlParams.get('responseId') || ''
+        responseId: urlParams.get('responseId') || '',
+        insuranceProvider: urlParams.get('insuranceProvider') || '',
+        documentId: urlParams.get('documentId') || ''
     };
 
-    // Set patient name and current date
-    document.getElementById('patientName').textContent = `${patientData.firstName} ${patientData.lastName}`;
-    document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
+    // Fill in patient information section
+    const patientInfoSection = document.getElementById('patientInfoSection');
+    if (patientInfoSection) {
+        patientInfoSection.innerHTML = `
+            <div class="patient-info">
+                <p><strong>Patient Name:</strong> ${patientData.firstName} ${patientData.lastName}</p>
+                <p><strong>Email:</strong> ${patientData.email}</p>
+                <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+                ${patientData.insuranceProvider ? `<p><strong>Insurance Provider:</strong> ${patientData.insuranceProvider}</p>` : ''}
+            </div>
+        `;
+    }
 
     // Initialize signature pad
     const canvas = document.getElementById('signaturePad');
-    initializeSignaturePad(canvas);
+    if (canvas) {
+        signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgb(255, 255, 255)',
+            penColor: 'rgb(0, 0, 0)'
+        });
 
-    // Add event listeners
-    document.getElementById('clearSignature').addEventListener('click', function() {
-        signaturePad.clear();
-    });
+        // Resize canvas
+        function resizeCanvas() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            signaturePad.clear();
+        }
 
-    document.getElementById('submitConsent').addEventListener('click', submitConsentForm);
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        // Clear signature button
+        const clearButton = document.getElementById('clearButton');
+        if (clearButton) {
+            clearButton.addEventListener('click', function() {
+                signaturePad.clear();
+            });
+        }
+    }
+
+    // Form submission
+    const consentForm = document.getElementById('consentForm');
+    if (consentForm) {
+        consentForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (signaturePad && signaturePad.isEmpty()) {
+                alert('Please provide your signature before submitting.');
+                return;
+            }
+
+            const privacyCheckbox = document.getElementById('privacy_acknowledgment');
+            if (privacyCheckbox && !privacyCheckbox.checked) {
+                alert('Please acknowledge that you have read and understand the Notice of Privacy Practices.');
+                return;
+            }
+
+            const formData = {
+                firstName: patientData.firstName,
+                lastName: patientData.lastName,
+                email: patientData.email,
+                responseId: patientData.responseId,
+                insuranceProvider: patientData.insuranceProvider,
+                documentId: patientData.documentId,
+                signatureData: signaturePad ? signaturePad.toDataURL() : '',
+                signatureDate: new Date().toISOString(),
+                privacyAcknowledged: true,
+                formType: 'registration'
+            };
+
+            try {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbzWxMalG2rPihxQe6cQ2gbCdfSwL9yJWpNOdumFup5M7BeAXBdKjYXBfIx-6yPCJGHx/exec', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        alert('Thank you! Your consent form has been submitted successfully.');
+                        // Redirect to a thank you page
+                        window.location.href = '/thank-you.html';
+                    } else {
+                        throw new Error(result.message || 'Form submission failed');
+                    }
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error submitting the form. Please try again or contact the clinic for assistance.');
+            }
+        });
+    }
 });
-
-function initializeSignaturePad(canvas) {
-    // Set canvas dimensions based on container size
-    function resizeCanvas() {
-        const ratio = Math.max(window.devicePixelRatio || 1, 1);
-        canvas.width = canvas.offsetWidth * ratio;
-        canvas.height = canvas.offsetHeight * ratio;
-        canvas.getContext("2d").scale(ratio, ratio);
-    }
-
-    // Initialize signature pad
-    signaturePad = new SignaturePad(canvas, {
-        backgroundColor: 'rgb(255, 255, 255)',
-        penColor: 'rgb(0, 0, 0)',
-        minWidth: 0.5,
-        maxWidth: 2.5
-    });
-
-    // Handle window resize
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-}
-
-async function submitConsentForm() {
-    if (signaturePad.isEmpty()) {
-        alert('Please provide your signature before submitting.');
-        return;
-    }
-
-    try {
-        // Get signature as base64 image
-        const signatureData = signaturePad.toDataURL();
-        
-        // Get current date for filename
-        const currentDate = new Date().toISOString().split('T')[0];
-        const fileName = `${patientData.firstName}_${patientData.lastName}_Consent_${currentDate}.pdf`;
-        
-        // Google Form submission URL
-        const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSd8hS4jrpLJ8IKKLfOkDm-6jKX4-Sv3YZ10GWuVeT1YK0_YhQ/formResponse';
-        
-        // Create URL parameters for the Google Form
-        const params = new URLSearchParams({
-            'entry.793140059': `${patientData.firstName} ${patientData.lastName}`, // Patient Name
-            'entry.2087935553': patientData.email,                                 // Email Address
-            'entry.183935946': patientData.formResponseId,                         // Original Form Response ID
-            'entry.450979518': signatureData,                                      // Digital Signature Data
-            'filename': fileName                                                    // Add filename for reference
-        });
-
-        // Create a hidden form and submit it
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = formUrl;
-        
-        // Handle CORS by submitting to a hidden iframe
-        const frameName = 'hidden_iframe';
-        const iframe = document.createElement('iframe');
-        iframe.name = frameName;
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-        form.target = frameName;
-
-        // Add hidden inputs for each parameter
-        params.forEach((value, key) => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = key;
-            input.value = value;
-            form.appendChild(input);
-        });
-
-        // Add form to document and submit it
-        document.body.appendChild(form);
-        
-        // Show loading message
-        const loadingMessage = document.createElement('div');
-        loadingMessage.className = 'loading-message';
-        loadingMessage.textContent = 'Submitting your consent form...';
-        document.body.appendChild(loadingMessage);
-
-        // Submit the form
-        form.submit();
-
-        // Wait a moment to ensure the form submission has started
-        setTimeout(() => {
-            // Clean up
-            document.body.removeChild(form);
-            document.body.removeChild(loadingMessage);
-            document.body.removeChild(iframe);
-
-            // Save signature locally
-            localStorage.setItem('lastSignature', signatureData);
-            
-            // Show success message and redirect
-            handleSubmissionSuccess();
-        }, 2000);
-
-    } catch (error) {
-        console.error('Error submitting consent form:', error);
-        handleSubmissionError(error);
-    }
-}
-
-function handleSubmissionSuccess() {
-    alert('Thank you! Your consent form has been submitted successfully.');
-    window.location.href = 'thank-you.html';
-}
-
-function handleSubmissionError(error) {
-    console.error('Error:', error);
-    alert('An error occurred while submitting the form. Please try again. If the problem persists, please contact us.');
-}

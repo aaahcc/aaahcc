@@ -98,18 +98,35 @@ function createSignedConsentPDF(formData) {
 }
 
 function updateConsentFormStatus(responseId, documentId, status) {
-  const TRACKING_SHEET_ID = '1K0m9PHZi-p2rdVKrtZjBa3EpoK1-seaxo7l_wV-jcXw';
-  const sheet = SpreadsheetApp.openById(TRACKING_SHEET_ID).getActiveSheet();
-  const data = sheet.getDataRange().getValues();
-  
-  // Find the row with matching responseId
-  for (let i = 1; i < data.length; i++) {
-    if (data[i][0] === responseId) { // Assuming responseId is in column A
-      // Update status (Column J) and document ID (Column K)
-      sheet.getRange(i + 1, 10).setValue(status);
-      sheet.getRange(i + 1, 11).setValue(documentId);
-      break;
+  try {
+    // Open the tracking sheet
+    const sheet = SpreadsheetApp.openById('1K0m9PHZi-p2rdVKrtZjBa3EpoK1-seaxo7l_wV-jcXw').getActiveSheet();
+    const data = sheet.getDataRange().getValues();
+    
+    // Find the row with matching responseId
+    let rowIndex = -1;
+    for (let i = 0; i < data.length; i++) {
+      if (data[i][3] === responseId) { // Assuming responseId is in column D (index 3)
+        rowIndex = i + 1; // Add 1 because sheet rows are 1-based
+        break;
+      }
     }
+    
+    if (rowIndex === -1) {
+      throw new Error(`No record found for responseId: ${responseId}`);
+    }
+    
+    // Update the consent form ID and status
+    sheet.getRange(rowIndex, 9).setValue(documentId); // Column I for document ID
+    sheet.getRange(rowIndex, 10).setValue(status); // Column J for status
+    sheet.getRange(rowIndex, 11).setValue(new Date()); // Column K for timestamp
+    
+    Logger.log(`Updated consent form status for responseId ${responseId}: ${status}`);
+    return true;
+  } catch (error) {
+    console.error('Error updating consent form status:', error);
+    Logger.log('Error updating consent form status: ' + error);
+    return false;
   }
 }
 
